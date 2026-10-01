@@ -1,4 +1,9 @@
 .venv/
 __pycache__/
 *.egg-info/
+.mutmut-cache/
+mutmut-results.db
+mutants/
+.coverage
+.pytest_cache/
 

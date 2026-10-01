@@ -12,40 +12,21 @@ publication date, but only as trustworthy as the page itself.
 
 These are open questions where I need your input:
 
-1. **HTML parsing library.** Three options:
-   - `html.parser` (stdlib) — no new dep, but fragile on messy HTML
-   - `beautifulsoup4` with `html.parser` backend — clean API, one pure-Python dep, no binaries
-   - `lxml` — fastest, but binary dep, harder to install on some platforms
-   - **Recommendation: `beautifulsoup4` with `html.parser`**
+1. **HTML parsing library.** ✅ `beautifulsoup4` with `html.parser` backend.
 
-2. **Date parsing for Python 3.10 compatibility.** `datetime.fromisoformat` in 3.10
-   does not handle the `Z` suffix (`2023-01-15T10:30:00Z`), which is common in
-   `article:published_time` values. Two options:
-   - Handle `Z` → `+00:00` substitution manually (one line, no new dep)
-   - Add `python-dateutil` as a runtime dep (handles all ISO 8601 variants)
-   - **Recommendation: manual Z substitution** — keeps deps minimal
+2. **Date parsing for Python 3.10 compatibility.** ✅ Manual fix: replace `Z` with
+   `+00:00` before calling `datetime.fromisoformat`. No new dep.
 
-3. **Which signals to support in v1.** In priority order:
-   - `<meta property="article:published_time">` (Open Graph, most reliable)
-   - `<meta property="og:published_time">` (alternative OG property)
-   - JSON-LD `datePublished` (used by many CMS/blogs, e.g. WordPress)
-   - `<time datetime="...">` (fallback, common in article markup)
-   - **Recommendation: all four in v1** — they're all simple to extract and
-     collectively cover most publishing platforms
+3. **Which signals to support in v1.** ✅ All four, built and tested one at a time:
+   - `<meta property="article:published_time">` — first
+   - `<meta property="og:published_time">` — second
+   - JSON-LD `datePublished` — third
+   - `<time datetime="...">` — fourth
 
-4. **`default = True` or `False`?** This source makes a live HTTP request to
-   the target URL, which is a side effect the user might not always want.
-   - `True`: included in every run by default, makes the tool more useful immediately
-   - `False`: opt-in with `--source metadata`, safer/quieter default
-   - **Recommendation: `True`** — the tool exists to find dates; this is the
-     best source for that
+4. **`default = True`.** ✅ Included in every run.
 
-5. **Fetch the live URL or an IA snapshot?** The live page reflects its current
-   state; an IA snapshot reflects a historical state but requires knowing which
-   snapshot to fetch.
-   - **Recommendation: live URL for v1** — simpler, and page metadata on static
-     blog posts is stable. Revisit if a use-case appears where the live page has
-     been edited.
+5. **Fetch the live URL.** ✅ Live page for v1; revisit if pages are edited after
+   publication.
 
 ---
 

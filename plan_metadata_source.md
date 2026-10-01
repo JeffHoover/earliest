@@ -8,9 +8,9 @@ publication date, but only as trustworthy as the page itself.
 
 ---
 
-## Decisions needed before writing any code
+## Decisions — all resolved
 
-These are open questions where I need your input:
+All decisions made. Recorded here for reference.
 
 1. **HTML parsing library.** ✅ `beautifulsoup4` with `html.parser` backend.
 

@@ -97,7 +97,7 @@ def test_request_params(source, respx_mock):
     )
     source.find_earliest("example.com/post?utm_source=x#top", timeout=5)
 
-    params = route.calls.last.request.url.params
+    params = route.calls[0].request.url.params
     assert params["url"] == "https://example.com/post"  # normalized
     assert params["limit"] == "1"
     assert params["filter"] == "statuscode:200"

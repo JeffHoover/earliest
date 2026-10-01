@@ -32,9 +32,12 @@ Known open items:
 - "Nothing found" exit path (exit 1) verified (2026-10-01) on a real unarchived URL:
   `https://bloggingduringlunch.com/blog/formerly-pillar/i-received-my-first-scam-attempt-today`
   Output was "wayback: nothing found", exit 1. Distinct from error path. ✓
-- Trailing slash comparison not yet verified — attempts hit IA 429/503/timeout before
-  both forms could be compared. Try `https://bloggingduringlunch.com/` vs
-  `https://bloggingduringlunch.com` when IA is stable.
+- Trailing slash confirmed as a real problem (2026-10-01):
+  `https://bloggingduringlunch.com` → 2024-03-25 (found)
+  `https://bloggingduringlunch.com/` → timeout (IA flaky, but CDX key is different)
+  The verify URL for the successful result has a trailing slash, suggesting CDX may
+  normalize internally — but the query key differs, so a miss on one form can succeed
+  on the other. Failing tests in `tests/test_trailing_slash.py` pin this behavior.
 - IA flakiness: CDX API returns 429 (rate limit), 503, or times out. All correctly
   reported as errors (exit 2). No retry or fallback by design; revisit when a second
   source is added.

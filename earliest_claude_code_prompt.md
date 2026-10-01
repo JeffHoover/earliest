@@ -103,7 +103,7 @@ Frontmatter: `description`, `argument-hint: <url> [--source NAME]... [--exclude 
 
 These are deliberate simplifications. Surface them to me when real usage hits them; don't silently "fix" them.
 
-- **Trailing slash:** `https://example.com/post` and `https://example.com/post/` are different CDX keys, so a miss on one may succeed on the other. Not handled yet. Candidate fix: retry with the alternate form.
+- **Trailing slash:** `https://example.com/post` and `https://example.com/post/` are different CDX keys, so a miss on one may succeed on the other. Not handled yet. Candidate fix: retry with the alternate form. **Confirmed real in the wild (2026-10-01):** `https://bloggingduringlunch.com` returned 2024-03-25; `https://bloggingduringlunch.com/` got a timeout (IA was flaky) but CDX key differs. Failing tests documenting expected fix behavior are in `tests/test_trailing_slash.py`.
 - **Status filter:** `statuscode:200` can make the reported date later than the truly earliest capture (for example when the first capture was a redirect). Removing it gives the earliest capture but possibly an error page. Reversible; a test pins the current params.
 - **Earliest = min across all evidence types** is a simplification. Once page-metadata sources exist, an archive date and a page's self-claimed date mean different things, so they may need to be reported separately rather than min'd together.
 - **`select_sources` quirks, pinned by tests:** `--exclude` is ignored when `--source` is given, and excluding an unknown name is silently ignored. Neither is necessarily desirable; I may want errors or warnings instead.

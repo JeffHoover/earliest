@@ -35,6 +35,16 @@ def normalize_url(url: str) -> str:
     )
 
 
+def _toggle_slash(url: str) -> str:
+    """Return the URL with the path's trailing slash toggled."""
+    parts = urlsplit(url)
+    if parts.path.endswith("/"):
+        new_path = parts.path.rstrip("/") or ""
+    else:
+        new_path = parts.path + "/"
+    return urlunsplit((parts.scheme, parts.netloc, new_path, parts.query, ""))
+
+
 def parse_timestamp(ts: str) -> datetime:
     """CDX timestamps look like 20190314093015 (UTC)."""
     return datetime.strptime(ts, "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc)
@@ -44,8 +54,7 @@ class WaybackSource:
     name = "wayback"
     default = True
 
-    def find_earliest(self, url: str, *, timeout: float) -> SourceResult:
-        target = normalize_url(url)
+    def _query_cdx(self, target: str, timeout: float) -> SourceResult:
         params = {
             "url": target,
             "output": "json",
@@ -90,4 +99,11 @@ class WaybackSource:
             ),
         )
 
-
+    def find_earliest(self, url: str, *, timeout: float) -> SourceResult:
+        target = normalize_url(url)
+        result = self._query_cdx(target, timeout)
+        if result.finding is None and result.error is None:
+            alt_result = self._query_cdx(_toggle_slash(target), timeout)
+            if alt_result.finding is not None:
+                return alt_result
+        return result

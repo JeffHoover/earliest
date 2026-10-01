@@ -109,3 +109,17 @@ pytest -v
 ```
 
 All tests mock HTTP; none touch the real network.
+
+### Mutation testing
+
+```
+mutmut run
+mutmut results
+mutmut show <id>
+```
+
+To clear results and rerun from scratch:
+
+```
+rm -rf mutants/ mutmut-results.db && mutmut run
+```

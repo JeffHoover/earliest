@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from unittest.mock import patch
 
 import httpx
 import pytest
@@ -81,6 +82,15 @@ def test_found_returns_finding(source, respx_mock):
     )
 
 
+def test_timeout_forwarded_to_httpx(source):
+    request = httpx.Request("GET", CDX_ENDPOINT)
+    response = httpx.Response(200, json=cdx_rows(), request=request)
+    with patch("earliest.sources.wayback.httpx.get") as mock_get:
+        mock_get.return_value = response
+        source.find_earliest("https://example.com", timeout=7.5)
+    assert mock_get.call_args.kwargs["timeout"] == 7.5
+
+
 def test_request_params(source, respx_mock):
     route = respx_mock.get(CDX_ENDPOINT).mock(
         return_value=httpx.Response(200, json=cdx_rows())
@@ -92,6 +102,7 @@ def test_request_params(source, respx_mock):
     assert params["limit"] == "1"
     assert params["filter"] == "statuscode:200"
     assert params["output"] == "json"
+    assert params["fl"] == "timestamp,original,statuscode"
 
 
 # --- nothing found (not an error) --------------------------------------------
@@ -157,6 +168,7 @@ def test_malformed_row_is_error(source, respx_mock, bad_row):
         return_value=httpx.Response(200, json=cdx_rows(bad_row))
     )
     result = source.find_earliest("https://example.com", timeout=5)
+    assert result.source == "wayback"
     assert result.finding is None
     assert "unexpected CDX row format" in result.error
 

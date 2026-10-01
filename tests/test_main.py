@@ -132,6 +132,10 @@ def test_json_output_structure(use_sources, capsys):
     assert data["earliest"]["source"] == "wayback"
     assert data["earliest"]["evidence"] == "archive_capture"
     assert data["earliest"]["date"].startswith("2019-03-14T09:30:15")
+    assert data["earliest"]["evidence_url"] == (
+        "https://web.archive.org/web/20190314093015/https://example.com"
+    )
+    assert data["earliest"]["note"] == "first HTTP 200 capture"
     assert [r["source"] for r in data["results"]] == ["wayback", "other"]
     assert data["results"][1]["error"] == "x"
     assert data["results"][1]["finding"] is None

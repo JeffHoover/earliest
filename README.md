@@ -123,3 +123,30 @@ To clear results and rerun from scratch:
 ```
 rm -rf mutants/ mutmut-results.db && mutmut run
 ```
+
+### Continuing the mutation triage
+
+As of 2026-09-30, 27 mutants survive. The gaps found so far are documented in
+`mutation_testing_notes.md`. The following mutants have not been examined and are
+theorised to be trivial (error-message string wrapping, formatting, or equivalent
+mutants) — but show them to Claude to confirm before closing them off:
+
+```
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_32
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_37
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_42
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_47
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_52
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_57
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_69
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_85
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_91
+mutmut show earliest.sources.wayback.xǁWaybackSourceǁfind_earliest__mutmut_92
+mutmut show earliest.__main__.x_render_json__mutmut_18
+mutmut show earliest.__main__.x_render_json__mutmut_23
+mutmut show earliest.__main__.x_render_text__mutmut_9
+mutmut show earliest.__main__.x_render_text__mutmut_19
+mutmut show earliest.__main__.x_render_text__mutmut_23
+mutmut show earliest.sources.wayback.x_normalize_url__mutmut_14
+mutmut show earliest.sources.wayback.x_normalize_url__mutmut_15
+```

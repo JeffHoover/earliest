@@ -29,9 +29,14 @@ against a real URL: `https://paulgraham.com/avg.html` returned 2001-04-09, match
 assumptions (header-row + data-row JSON, timestamp parsing, snapshot URL construction).
 
 Known open items:
-- "Nothing found" exit path (exit 1) not yet exercised against a real URL — IA was flaky
-  during testing. Try a URL with no known captures when IA is stable.
+- "Nothing found" exit path (exit 1) verified (2026-10-01) on a real unarchived URL:
+  `https://bloggingduringlunch.com/blog/formerly-pillar/i-received-my-first-scam-attempt-today`
+  Output was "wayback: nothing found", exit 1. Distinct from error path. ✓
+- Trailing slash comparison not yet verified — attempts hit IA 429/503/timeout before
+  both forms could be compared. Try `https://bloggingduringlunch.com/` vs
+  `https://bloggingduringlunch.com` when IA is stable.
+- IA flakiness: CDX API returns 429 (rate limit), 503, or times out. All correctly
+  reported as errors (exit 2). No retry or fallback by design; revisit when a second
+  source is added.
 - One run showed normal output on stderr instead of stdout (exit code 2 case). May be a
   shell buffering artifact; watch for it on future runs.
-- IA flakiness: CDX API returns 503 or times out during outages. No retry or fallback by
-  design; revisit when a second source is added.

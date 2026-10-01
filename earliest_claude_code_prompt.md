@@ -95,8 +95,8 @@ Frontmatter: `description`, `argument-hint: <url> [--source NAME]... [--exclude 
 - All files are in place and consistent with this prompt. No missing or inconsistent items found.
 - `pytest -v`: **50/50 passing** as of 2026-09-30. No failures; no tests look wrong.
 - CDX response format **confirmed against a real URL**: `python -m earliest https://paulgraham.com/avg.html` returned `2001-04-09` with snapshot URL `https://web.archive.org/web/20010409063841/http://www.paulgraham.com:80/avg.html`. The header-row + data-row JSON format, timestamp parsing, and snapshot URL construction all matched assumptions exactly.
-- The Internet Archive CDX API was intermittently offline during initial testing (returning 503 or timing out). Both error cases are caught and reported correctly. IA was stable enough to confirm the format with one successful run.
-- **The "nothing found" exit path (exit 1) has not been verified** with a real URL yet — attempts to test it hit IA 503s before getting a clean empty result.
+- The Internet Archive CDX API is intermittently flaky (returning 429, 503, or timing out). All three error cases are caught and reported correctly as exit 2. IA was stable enough to confirm the CDX format with one successful run.
+- **The "nothing found" exit path (exit 1) verified** (2026-10-01): `python -m earliest https://bloggingduringlunch.com/blog/formerly-pillar/i-received-my-first-scam-attempt-today` returned "wayback: nothing found", exit 1. Clearly distinct from error path in output and exit code.
 - **Stdout/stderr observation:** on a run that returned exit code 2 (all sources errored), the normal text output appeared on stderr rather than stdout in one capture. This may be a shell buffering artifact or a real bug. Worth watching for on future runs.
 
 ## Known limitations and open decisions
@@ -109,7 +109,8 @@ These are deliberate simplifications. Surface them to me when real usage hits th
 - **`select_sources` quirks, pinned by tests:** `--exclude` is ignored when `--source` is given, and excluding an unknown name is silently ignored. Neither is necessarily desirable; I may want errors or warnings instead.
 - **Sources run sequentially.** Fine for one source; when there are several, switch to a thread pool inside `main`.
 - **`--timeout` is per source**, not total.
-- **IA flakiness:** the CDX API returns 503 or times out during Internet Archive outages. The tool reports this honestly (exit 2, ERROR line) but has no retry logic and no fallback source. This is by design for v1; revisit when a second source is added.
+- **IA flakiness:** the CDX API returns 429 (rate limit), 503, or times out during Internet Archive outages. The tool reports all three honestly (exit 2, ERROR line) but has no retry logic and no fallback source. This is by design for v1; revisit when a second source is added.
+- **Trailing slash not yet compared:** tried `https://bloggingduringlunch.com/` vs `https://bloggingduringlunch.com` on 2026-10-01 but IA was flaky (429/503/timeout) before both could complete. Still unverified in practice.
 - **No official IA status page:** `status.archive.org` redirects to `archive.org` (not a real status page). Their Bluesky/Mastodon/Twitter accounts are the stated channels for outage information, but may not have timely posts during outages.
 
 ## Possible future sources (do not build yet)

@@ -2,6 +2,25 @@
 
 Relevant to `earliest` because the Wayback CDX API is the only v1 source.
 
+## Ethical posture
+
+The CDX API is a public, documented API that IA explicitly offers for programmatic
+use. A single-user tool making one request per invocation is well within intended
+use and far below the 60 req/min limit.
+
+IA is a nonprofit under real financial and infrastructure pressure. The flakiness
+we've seen is partly caused by others abusing their services. Being a well-behaved
+client matters: honor 429s, don't retry aggressively. The current code already
+does this — it makes one request and reports errors honestly rather than retrying.
+
+If `earliest` is ever used in a batch loop over many URLs, add deliberate rate
+limiting. That's a future problem; for single-user interactive use it's not a
+concern.
+
+Note: IA's `robots.txt` applies to web crawling, not the CDX API. If a future
+page-metadata source fetches pages from IA snapshot URLs rather than the live web,
+revisit this.
+
 ## What we've observed
 
 | Date | Error | Likely cause |

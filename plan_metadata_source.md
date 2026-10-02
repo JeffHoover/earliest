@@ -4,13 +4,11 @@ Second source for `earliest`. Fetches the live page and extracts self-reported
 publication dates. Evidence type: `PAGE_METADATA` — the closest thing to a true
 publication date, but only as trustworthy as the page itself.
 
-**Do not begin until this plan is approved.**
-
 ---
 
 ## Decisions — all resolved
 
-All decisions made. Recorded here for reference.
+All decisions made.
 
 1. **HTML parsing library.** ✅ `beautifulsoup4` with `html.parser` backend.
 
@@ -30,7 +28,7 @@ All decisions made. Recorded here for reference.
 
 ---
 
-## TDD steps (do not execute yet)
+## TDD steps
 
 ### Step 1 — write `tests/test_metadata.py` (all tests failing)
 
